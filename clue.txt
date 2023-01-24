@@ -1,0 +1,126 @@
+
+GET https://api.gettr.com/u/user/dahuangf/followers?max=20&incl=userstats%7Cuserinfo%7Cfollowings%7Cfollowers
+https://api.gettr.com/u/user/dahuangf/followers?max=20&incl=userstats|userinfo|followings|followers&cursor=X0BfYmw0MDg=
+x-app-auth: {"user": "lettywong", "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJsZXR0eXdvbmciLCJ1c2VybmFtZSI6ImxldHR5d29uZyIsImxldmVsIjowLCJndmVyIjoiMkU2NTkxOEYiLCJjdmVyIjoiTTQ4Tlg3IiwiaWF0IjoxNjcyNzQ5NjU1LCJleHAiOjE5ODgxMDk2NTV9.ZKmZZzXDRTl4Uv-aAPAcy9AbtsHvnQ3otVsHOUpupwQ"}
+
+{
+  "_t": "xresp",
+  "rc": "OK",
+  "result": {
+    "data": {
+      "udate": 1674551242430,
+      "_t": "rslst",
+      "cdate": 1674551242430,
+      "list": [
+        "sherrywang",
+        "a812501193",
+        "dendoukomatou",
+        "helen0331",
+        "mg1142",
+        "taiporyan",
+        "linxi",
+        "tianzhizhen",
+        "duoli",
+        "xinsheng",
+        "fujihong",
+        "meilirensheng77",
+        "chocky7",
+        "macan",
+        "teddywinner007",
+        "chuo88",
+        "ocelial0218",
+        "daybreak",
+        "live2021",
+        "wuzhiqiang"
+      ],
+      "_id": "rslst_1674551242430"
+    },
+    "aux": {
+      "uinf": {
+        "sherrywang": {
+          "xversion": "271210908",
+          "udate": 1656779460187,
+          "username": "sherrywang",
+          "ico": "group15/getter/2021/11/27/11/a9f2cc3a-3c94-64a0-78f8-87ef19999605/b3650e544ef3488f55f1e3b0531d2e07.jpg",
+          "_id": "sherrywang",
+          "_t": "uinf",
+          "flw": 1033,
+          "nickname": "SherryWang",
+          "flg": 1751,
+          "ousername": "SherryWang",
+          "lkspst": "4078",
+          "lkscm": "26",
+          "lang": "en",
+          "status": "a",
+          "cdate": 1625396141984
+        },
+        "a812501193": {
+          "dsc": "唯真不破！爱七哥！",
+          "lkscm": "3",
+          "shspst": "24",
+          "username": "1327g",
+          "lang": "zh_CN",
+          "udate": 1674394083502,
+          "nickname": "@I'm3ya",
+          "bgimg": "group3/getter/2023/01/06/20/b67e634f-f392-1eb3-004c-f11e47adf85d/acadc82f538d791ad0cfd0d649a240fb.jpg",
+          "flw": 85,
+          "lkspst": "34",
+          "status": "a",
+          "shscm": "3",
+          "_id": "a812501193",
+          "ico": "group31/getter/2022/09/17/22/35ddc4d2-613a-b21b-0fc4-c518c2f6957f/90b3335f1d92890e14050d401ca0ce2f.jpg",
+          "_t": "uinf",
+          "pinpsts": "[\"p22o4b80902\"]",
+          "cdate": 1656387427548,
+          "flg": 1453,
+          "xversion": "271210908",
+          "ousername": "1327G"
+        },
+        "dendoukomatou": {
+          "location": "新中国联邦",
+          "lang": "zh_CN",
+          "flw": 3995,
+          "dsc": "唯真不破！新中国联邦公民",
+          "status": "a",
+          "bgimg": "group8/getter/2022/11/28/05/b6fe5544-e2b2-5167-2e45-d96a5e780397/7ae822779f836db008857563161d739c.jpg",
+          "_id": "dendoukomatou",
+          "cdate": 1625562992947,
+          "_t": "uinf",
+          "xversion": "271210908",
+          "pinpsts": "[\"pk2qwy0a51\"]",
+          "ousername": "DendouKomatou",
+          "username": "dendoukomatou",
+          "udate": 1669613045263,
+          "nickname": "东京樱花团🌸电动小魔头",
+          "ico": "group3/getter/2021/09/06/14/752409fd-295d-3024-beb1-d0a936807104/6bb932dce227dbe1e9dfacbd9c3bf4cc.jpg",
+          "flg": 3308
+        }
+      },
+      "fws": [
+        "a812501193",
+        "teddywinner007"
+      ],
+      "fwr": [
+        "teddywinner007"
+      ],
+      "dmus": [],
+      "verified": [],
+      "removed": 0,
+      "cursor": "X0BfanVzdGljZV9y"
+    },
+    "serial": "rslst"
+  }
+}
+
+
+POST https://api.gettr.com/u/user/LettyWong/follows/sherrywang
+''
+
+{
+  "_t": "xresp",
+  "rc": "OK",
+  "result": [
+    "y",
+    2093
+  ]
+}

@@ -1,0 +1,50 @@
+{
+	"manifest_version": 3,
+	"name": "GetManagementTool",
+	"version": "1.0.0",
+	"description": "how to use it?",
+	"icons": {
+		"16": "img/icon.png",
+		"48": "img/icon.png",
+		"128": "img/icon.png"
+	},
+	"action": {
+        "default_title": "Chrome Addon v3 Starter",
+        "default_popup": "popup.html"
+    },
+	"content_scripts": [
+		{
+			"matches": ["https://api.gettr.com/*", "https://gettr.com/*"],
+			"js": ["js/content-script.js"]
+		}
+	],
+	"permissions": [
+		"declarativeContent",
+		"webRequest",
+		"declarativeNetRequest",
+    	"declarativeNetRequestFeedback",
+		"declarativeNetRequestWithHostAccess",
+		"storage",
+        "activeTab",
+        "scripting",
+        "tabs",
+		"cookies"
+	],
+	"declarative_net_request": {
+		"rule_resources": [{
+			"id": "ruleset_1",
+			"enabled": true,
+			"path": "rules.json"
+		}]
+	},
+	"host_permissions": [
+        "*://*/*"
+    ],
+	"background": {
+		"service_worker": "js/background.js"
+	},
+	"web_accessible_resources": [{
+		"matches": ["<all_urls>"],
+     	"resources": ["js/post_content.js"]
+   }]
+}

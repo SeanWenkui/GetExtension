@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>popup页</title>
+	<meta charset="utf-8"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style>
+	body {
+		width: 380px;
+		min-height: 100px;
+	}
+	a {margin-right: 10px;}
+	</style>
+
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-editable.css" rel="stylesheet"/>
+
+</head>
+<body>
+	<div class="container">
+		<table class="table table-sm text-center">
+			<thead>
+			<tr>
+				<th scope="col" class="text-center">#</th>
+				<th scope="col" class="text-center">Current Value</th>
+			</tr>
+			</thead>
+			<tbody class="countTable">
+			    <tr>
+				  <th scope="row" class="text-center">加粉被流控</th>
+				  <td class="text-left">
+					  <span id="follow_limit_hit"></span>
+				  </td>
+				</tr>
+
+
+
+			    <tr>
+				  <th scope="row" class="text-center">一次批粉数</th>
+				  <td id="follow_batch_size_container" class="text-left">
+				  </td>
+				</tr>
+				<tr>
+				  <th scope="row" class="text-center">批粉间隔秒</th>
+				  <td id="follow_action_interval_container" class="text-left">
+				  </td>
+				</tr>
+				<tr>
+				  <th scope="row" class="text-center">我的用户名</th>
+				  <td id="my_user_name_container" class="text-left"></td>
+				</tr>
+
+				<tr>
+				  <th scope="row" class="text-center">我的序列号</th>
+				  <td id="my_token_container" class="text-left">
+				  </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-editable.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mockjax.js"></script>
+	<script type="text/javascript" src="js/popup.js"></script>
+</body>
+</html>

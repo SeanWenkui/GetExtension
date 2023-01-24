@@ -1,1 +1,1 @@
-# GetExtension
+# GnewsPlugin
