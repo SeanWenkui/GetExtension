@@ -28,10 +28,9 @@ let original_lines = [];
 const known_users = [];
 
 
-
 function main_entry() {
     set_token(CONFIG.my_token);
-    chrome.storage.sync.get([CONFIG_GETTR], function(items) {
+    chrome.storage.sync.get([CONFIG_GETTR], function (items) {
         console.log('items from cache', items);
         if (CONFIG_GETTR in items) {
             let cache_values = items[CONFIG_GETTR];
@@ -85,7 +84,9 @@ function set_token(token) {
 async function follow_one(user_list) {
     if (!CONFIG.follow_enabled) {
         let timeout = CONFIG.follow_one_interval_second * 1000;
-        setTimeout(function () {follow_one(user_list);}, timeout);
+        setTimeout(function () {
+            follow_one(user_list);
+        }, timeout);
         return;
     }
 
@@ -105,15 +106,18 @@ async function follow_one(user_list) {
         }
     }).then(response => response.json());
     if (resp.rc !== 'OK') {
-        if (resp.rc === 'E_METER_LIMIT_EXCEEDED') {
+        if (resp.rc === 'E_METER_LIMIT_EXCEEDED' || resp.error.code === 'E_METER_LIMIT_EXCEEDED') {
             CONFIG.follow_limit_hit = true;
+            CONFIG.follow_enabled = false;
         }
         console.log(`operation: follow ${user} failed, result`, resp)
     } else {
         CONFIG.follow_limit_hit = false;
         CONFIG.still_working = true;
         let timeout = CONFIG.follow_one_interval_second * 1000;
-        setTimeout(function () {follow_one(user_list);}, timeout);
+        setTimeout(function () {
+            follow_one(user_list);
+        }, timeout);
     }
 
 
@@ -122,7 +126,9 @@ async function follow_one(user_list) {
 async function follow_batch(start_user, cursor) {
     if (!CONFIG.follow_enabled) {
         let timeout = CONFIG.follow_batch_interval_minutes * 60 * 1000;
-        setTimeout(function () {follow_batch(start_user, cursor);}, timeout);
+        setTimeout(function () {
+            follow_batch(start_user, cursor);
+        }, timeout);
         return;
     }
     CONFIG.still_working = false;
@@ -135,7 +141,7 @@ async function follow_batch(start_user, cursor) {
     if (cursor) {
         paras['cursor'] = cursor;
     }
-    url = url + '?' + new URLSearchParams().toString();
+    url = url + '?' + new URLSearchParams(paras).toString();
 
     let resp = await fetch(url, {
         method: 'GET',
@@ -147,6 +153,7 @@ async function follow_batch(start_user, cursor) {
     if (resp.rc === 'OK') {
         let followers_following_star = resp?.result?.aux?.uinf;
         let already_followed_by_me = resp?.result?.aux?.fws;
+        console.log('resp', resp.result.aux);
         if (followers_following_star) {
             let exception_list = already_followed_by_me ? already_followed_by_me : [];
             console.log(`already followed list ${exception_list}`);
@@ -165,7 +172,9 @@ async function follow_batch(start_user, cursor) {
         if (cursor) {
             CONFIG.still_working = true;
             let timeout = CONFIG.follow_batch_interval_minutes * 60 * 1000;
-            setTimeout(function () {follow_batch(start_user, cursor);}, timeout);
+            setTimeout(function () {
+                follow_batch(start_user, cursor);
+            }, timeout);
             return cursor;
         }
     } else {
@@ -173,8 +182,6 @@ async function follow_batch(start_user, cursor) {
     }
     return undefined;
 }
-
-
 
 
 async function follow_others() {
@@ -219,5 +226,4 @@ async function msg_handler(request, sender, sendResponse) {
 
 
 chrome.runtime.onMessage.addListener(msg_handler);
-
 
