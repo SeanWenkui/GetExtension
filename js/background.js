@@ -1,45 +1,100 @@
 console.log("background.js loaded");
 
 const CONFIG = {
-    my_user_name: 'LettyWong',
-    my_token: `eyJhbGciOiJIUzI1N
-iIsInR5cCI6IkpXVCJ9.
-eyJ1c2VySWQiOiJsZXR0eX
-dvbmciLCJ1c2Vybm
-FtZSI6Imxl
-dHR5d29uZyIsImxldmVsI
-jowLCJndmVyIjoi
-MkU2NTkxOEYi
-LCJjdmVyIjoiTTQ4T
-lg3Iiwia
-WF0IjoxNjcyNzQ5N
-jU1LCJl
-eHAiOjE5ODgxMDk2N
-TV9.ZKmZZz
-XDRTl4Uv-aAPAcy9A
-btsHvnQ3
-otVsHOUpupwQ`,
+    follow_enabled: true,
+    my_user_name: 'seanzhang',
+    start_user: 'lettywong',
+    my_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJzZWFuemhhbmciLCJ1c2VybmFtZSI6InNlYW56aGFuZyIsImxldmVsIjowLCJndmVyIjoiMkU2NTkxOEYiLCJjdmVyIjpudWxsLCJpYXQiOjE2NzQ2MTYzOTcsImV4cCI6MTY3NzIwODM5N30.9eFCyiDGld8kX45npzd8Q9KjzpNO-ZpSmGjXCCE5uHU',
     follow_batch_size: 20,
-    follow_action_interval: 60,
+    follow_one_interval_second: 10,
+    follow_batch_interval_minutes: 10,
     follow_limit_hit: false,
+    still_working: true,
 };
 
 const changeable_keys = [
+    'follow_enabled',
     'my_user_name',
     'my_token',
+    'start_user',
     'follow_batch_size',
-    'follow_action_interval',
+    'follow_one_interval_second',
+    'follow_batch_interval_minutes',
 ];
+const CONFIG_GETTR = 'CONFIG_GETTR';
 
+let original_lines = [];
+
+const known_users = [];
+
+
+
+function main_entry() {
+    set_token(CONFIG.my_token);
+    chrome.storage.sync.get([CONFIG_GETTR], function(items) {
+        console.log('items from cache', items);
+        if (CONFIG_GETTR in items) {
+            let cache_values = items[CONFIG_GETTR];
+            for (let key in cache_values) {
+                if (changeable_keys.indexOf(key) >= 0) {
+                    CONFIG[key] = cache_values[key];
+                    console.log('CONFIG ' + key + ' = ' + CONFIG[key]);
+                }
+            }
+        }
+
+        setInterval(follow_others, 1000);
+    });
+
+    import_text_file('post_content.js');
+}
+
+function import_text_file(one_file) {
+    try {
+        importScripts(one_file);
+        original_lines = file_content.split('\n');
+    } catch (e) {
+        console.warn(e);
+    }
+}
+
+main_entry();
 
 
 function get_my_token() {
     return CONFIG.my_token.replaceAll(/\s/g, '')
 }
 
+function set_token(token) {
+    let one_line_lenth = 'EF34F14CF8F7A00C9A01DB61234'.length;
+    token = token.replaceAll(/\s/g, '');
+    let start = 0;
+    let end = start + one_line_lenth;
+    let one_line = '';
+    let result = [];
+    do {
+        one_line = token.slice(start, end);
+        result.push(one_line);
+        start = end;
+        end = start + one_line_lenth;
+    } while (start < token.length);
+    CONFIG.my_token = result.join('\n');
+}
 
 
-async function follow_one(user) {
+async function follow_one(user_list) {
+    if (!CONFIG.follow_enabled) {
+        let timeout = CONFIG.follow_one_interval_second * 1000;
+        setTimeout(function () {follow_one(user_list);}, timeout);
+        return;
+    }
+
+    CONFIG.still_working = false;
+    let user = user_list.pop();
+    if (!user) {
+        return;
+    }
+    console.log(`task list ${user_list}`);
     let my_user_name = CONFIG.my_user_name.toLowerCase()
     let url = `https://api.gettr.com/u/user/${my_user_name}/follows/${user}`
 
@@ -57,11 +112,21 @@ async function follow_one(user) {
         console.log(`operation: follow ${user} failed, result`, resp)
     } else {
         CONFIG.follow_limit_hit = false;
+        CONFIG.still_working = true;
+        let timeout = CONFIG.follow_one_interval_second * 1000;
+        setTimeout(function () {follow_one(user_list);}, timeout);
     }
+
 
 }
 
 async function follow_batch(start_user, cursor) {
+    if (!CONFIG.follow_enabled) {
+        let timeout = CONFIG.follow_batch_interval_minutes * 60 * 1000;
+        setTimeout(function () {follow_batch(start_user, cursor);}, timeout);
+        return;
+    }
+    CONFIG.still_working = false;
     let my_user_name = CONFIG.my_user_name.toLowerCase()
     let url = `https://api.gettr.com/u/user/${start_user}/followers`;
     let paras = {
@@ -81,20 +146,25 @@ async function follow_batch(start_user, cursor) {
     }).then(response => response.json());
 
     if (resp.rc === 'OK') {
-        let followers = resp?.result?.aux?.uinf;
-        if (followers) {
-            for (let id in followers) {
-                let user_info = followers[id];
-                await follow_one(user_info['username'])
+        let followers_following_star = resp?.result?.aux?.uinf;
+        let already_followed_by_me = resp?.result?.aux?.fws;
+        if (followers_following_star) {
+            let exception_list = already_followed_by_me ? already_followed_by_me : [];
+            let task_list = [];
+            for (let id in followers_following_star) {
+                let user_info = followers_following_star[id];
+                if (exception_list.indexOf(user_info['username']) < 0) {
+                    task_list.push(user_info['username']);
+                }
             }
+            await follow_one(task_list)
         }
 
         let cursor = resp?.result?.aux?.cursor;
         if (cursor) {
-            let timeout = CONFIG.follow_action_interval * 1000;
-            setTimeout(function () {
-                follow_batch(start_user, cursor);
-            }, timeout)
+            CONFIG.still_working = true;
+            let timeout = CONFIG.follow_batch_interval_minutes * 60 * 1000;
+            setTimeout(function () {follow_batch(start_user, cursor);}, timeout);
             return cursor;
         }
     } else {
@@ -106,13 +176,19 @@ async function follow_batch(start_user, cursor) {
 
 
 
-async function follow_others(user_name) {
+async function follow_others() {
+    let user_name = CONFIG.start_user;
+    if (known_users.indexOf(user_name) >= 0) {
+        return;
+    }
+    known_users.push(user_name);
+
     let cursor = undefined;
-    let timeout = CONFIG.follow_action_interval * 1000;
+    let timeout_v = CONFIG.follow_batch_interval_minutes * 60 * 1000;
 
     setTimeout(function () {
         follow_batch(user_name, cursor)
-    }, timeout);
+    }, timeout_v);
 }
 
 async function msg_handler(request, sender, sendResponse) {
@@ -124,18 +200,16 @@ async function msg_handler(request, sender, sendResponse) {
             if (changeable_keys.indexOf(key) >= 0) {
                 if (CONFIG[key] !== request[key]) {
                     console.log(`change config ${key} to ${request[key]} from ${CONFIG[key]}`);
-                    CONFIG[key] = request[key];
-                    let resp = await chrome.storage.sync.set({"CONFIG": CONFIG});
-                    console.log('save CONFIG to cache done', resp);
-
-
+                    if (key === 'my_token') {
+                        set_token(request[key])
+                    } else {
+                        CONFIG[key] = request[key];
+                    }
+                    let resp = await chrome.storage.sync.set({CONFIG_GETTR: CONFIG});
+                    console.log('save GETTR_CONFIG to cache done', resp);
                 }
             }
         }
-    } else if (request.cmd === 'FOLLOW') {
-        console.log(`background receive request:`, request);
-        let user_name = request.user;
-        await follow_others(user_name);
     } else {
         console.log(`background receive request:`, request);
     }

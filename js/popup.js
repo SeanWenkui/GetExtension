@@ -1,36 +1,28 @@
 const changeable_keys = [
+    'follow_enabled',
     'my_user_name',
     'my_token',
+    'start_user',
     'follow_batch_size',
-    'follow_action_interval',
+    'follow_one_interval_second',
+    'follow_batch_interval_minutes',
 ];
 
 const bool_keys = [
+    'follow_enabled',
     'follow_limit_hit',
+    'still_working',
 ];
 
 const number_keys = [
-    'follow_action_interval',
     'follow_batch_size',
+    'follow_one_interval_second',
+    'follow_batch_interval_minutes',
 ];
 
 const CONFIG_BKUP = {};
 
-function equal_check(dict1, dict2, keys) {
-    let res = true;
-    for (let key in dict1) {
-        if (keys.indexOf(key) >= 0 && dict1[key] !== dict2[key]) {
-            res = false;
-            break;
-        }
-    }
-    return res;
-}
-
 function update_table(config) {
-    if (!equal_check(CONFIG_BKUP, config, changeable_keys)) {
-        console.log('update_table: new vs old:', config, CONFIG_BKUP);
-    }
 
     for (let key in config) {
         if (changeable_keys.indexOf(key) >= 0) {
@@ -56,6 +48,7 @@ function init(config) {
     for (let key in CONFIG_BKUP) {
         data_pk++;
         let value = CONFIG_BKUP[key];
+        //console.log('key', key, value)
         let inner;
         if (changeable_keys.indexOf(key) >= 0) {
             let input_type = (key === 'my_token' ? 'textarea' : 'text')
