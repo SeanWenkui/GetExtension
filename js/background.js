@@ -94,7 +94,6 @@ async function follow_one(user_list) {
     if (!user) {
         return;
     }
-    console.log(`task list ${user_list}`);
     let my_user_name = CONFIG.my_user_name.toLowerCase()
     let url = `https://api.gettr.com/u/user/${my_user_name}/follows/${user}`
 
@@ -150,6 +149,7 @@ async function follow_batch(start_user, cursor) {
         let already_followed_by_me = resp?.result?.aux?.fws;
         if (followers_following_star) {
             let exception_list = already_followed_by_me ? already_followed_by_me : [];
+            console.log(`already followed list ${exception_list}`);
             let task_list = [];
             for (let id in followers_following_star) {
                 let user_info = followers_following_star[id];
@@ -157,6 +157,7 @@ async function follow_batch(start_user, cursor) {
                     task_list.push(user_info['username']);
                 }
             }
+            console.log(`task list ${task_list}`);
             await follow_one(task_list)
         }
 
