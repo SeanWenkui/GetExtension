@@ -1,7 +1,7 @@
 console.log("background.js loaded");
 
 const CONFIG = {
-    follow_enabled: true,
+    follow_enabled: false,
     my_user_name: 'seanzhang',
     start_user: 'lettywong',
     my_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJzZWFuemhhbmciLCJ1c2VybmFtZSI6InNlYW56aGFuZyIsImxldmVsIjowLCJndmVyIjoiMkU2NTkxOEYiLCJjdmVyIjpudWxsLCJpYXQiOjE2NzQ2MTYzOTcsImV4cCI6MTY3NzIwODM5N30.9eFCyiDGld8kX45npzd8Q9KjzpNO-ZpSmGjXCCE5uHU',
